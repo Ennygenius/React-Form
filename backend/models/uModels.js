@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const USchema = new mongoose.Schema(
   {
     name: {
-      type: String, 
+      type: String,
       required: [true, "Please the name fields is required"],
     },
     DOB: {
@@ -21,10 +21,6 @@ const USchema = new mongoose.Schema(
     Country: {
       type: String,
       required: [true, "Please the Country fields is required"],
-    },
-    NextOfKin: {
-      type: String,
-      required: [true, "Please the NextOfKin fields is required"],
     },
     Image: {
       type: String,

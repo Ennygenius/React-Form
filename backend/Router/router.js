@@ -1,13 +1,15 @@
 import express from "express";
+
 import {
-  getAllUsers as getAllUsers,
-  createUser as createUser,
-  singleUser as singleUser,
-  deleteUser as deleteUser,
+  getAllUsers,
+  createUser,
+  singleUser,
+  deleteUser,
 } from "../controllers/UControllers.js";
 
-const router = express();
+const router = express.Router();
 
+// Define other routes
 router
   .get("/", getAllUsers)
   .post("/", createUser)

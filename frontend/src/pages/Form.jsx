@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
+import storage from "../../config/firebaseConfig";
+// import { ref } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Form = () => {
   const URI = "http://127.0.0.1:2002/";
@@ -11,9 +14,10 @@ const Form = () => {
   const [Address, setAddress] = useState("");
   const [DOB, setDOB] = useState("");
   const [Country, setCountry] = useState("");
-  const [NextOfKin, setNextOfKin] = useState("");
-  const [Image, setImage] = useState(null);
+  const [Image, setImage] = useState("");
   const [date, setdate] = useState(null);
+
+  const [percent, setPercent] = useState(0);
 
   useEffect(() => {}, []);
   const createUser = async () => {
@@ -23,28 +27,68 @@ const Form = () => {
       Address: Address,
       Country: Country,
       DOB: DOB,
-      NextOfKin: NextOfKin,
       Image: Image,
       date: date,
     });
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (createUser) {
-      createUser();
-      alert("User created successfully");
-      navigate("/");
+    try {
+      const response = await createUser();
+      if (response.status === 200) {
+        alert("User created successfully");
+        navigate("/");
+      } else {
+        alert("User creation failed. Please check your input data.");
+      }
+    } catch (error) {
+      alert("User creation failed. Please check your input data.");
     }
   };
+
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
+
+  const handleUpload = () => {
+    if (!Image) {
+      alert("Please upload an image first!");
+      return;
+    }
+
+    const storageRef = ref(storage, `/files/${Image.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, Image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const percent = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setPercent(percent);
+      },
+      (err) => console.log(err),
+      () => {
+        // The upload is complete; get the download URL
+        getDownloadURL(uploadTask.snapshot.ref)
+          .then((url) => {
+            setImage(url); // Update the state with the download URL
+            console.log(url);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    );
+  };
+
   return (
     <div>
       <Nav />
       <form
         className=" w-[90%] md:w-[70%] m-auto border shadow-lg p-5"
         onSubmit={handleSubmit}
+        encType="multipart/form-data"
       >
         <h2 className="text-center my-5 text-3xl font-bold underline">
           Application Form
@@ -134,39 +178,19 @@ const Form = () => {
             >
               DOB
             </label>
-            <div className="relative">
+            <div className="">
               <input
                 required
                 type="date"
                 name=""
                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-state"
+                id="grid-city"
                 onChange={(e) => {
                   setDOB(e.target.value);
                 }}
               />
             </div>
           </div>
-          <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="grid-zip"
-            >
-              Next of Kin
-            </label>
-            <input
-              required
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-zip"
-              type="text"
-              placeholder="next of kin"
-              onChange={(e) => {
-                setNextOfKin(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-between -mx-3 mb-2 md:mt-5 pt-5">
           <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -186,6 +210,8 @@ const Form = () => {
               onChange={handleFileChange}
             />
           </div>
+        </div>
+        <div className="flex flex-wrap justify-between -mx-3 mb-2 md:mt-5 pt-5">
           <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -193,7 +219,7 @@ const Form = () => {
             >
               Date
             </label>
-            <div className="relative">
+            <div className="">
               <input
                 required
                 type="date"
@@ -210,6 +236,7 @@ const Form = () => {
         <div className="">
           <input
             type="Submit"
+            onClick={handleUpload}
             value={"submit"}
             className="bg-gray-700 text-white py-3 px-10 text-md my-2 rounded cursor-pointer"
           />
