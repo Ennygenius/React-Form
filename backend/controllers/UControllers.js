@@ -7,7 +7,7 @@ const getAllUsers = asynchandler(async (req, res) => {
 });
 
 const createUser = asynchandler(async (req, res) => {
-  const { name, DOB, Nationality, Address, Country, Image, date } = req.body;
+  const { name, DOB, Nationality, Address, Country, date, Image } = req.body;
   console.log(req.body);
   const user = await User.create({
     name,

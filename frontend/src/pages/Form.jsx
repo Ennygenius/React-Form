@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
-import storage from "../../config/firebaseConfig";
-// import { ref } from "firebase/storage";
+import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Form = () => {
@@ -13,11 +12,29 @@ const Form = () => {
   const [Nationality, setNationality] = useState("");
   const [Address, setAddress] = useState("");
   const [DOB, setDOB] = useState("");
-  const [Country, setCountry] = useState("");
-  const [Image, setImage] = useState("");
+  const [Country, setCountry] = useState({});
+  const [Image, setImage] = useState(null);
   const [date, setdate] = useState(null);
 
-  const [percent, setPercent] = useState(0);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!Image) {
+      alert("Please upload an image first!");
+      return;
+    }
+    const blob = Image;
+    const storageRef = ref(storage, `/files/${Image}`); // Use the file name, not the URL
+    const snapShot = await uploadBytesResumable(storageRef, blob);
+    const url = await getDownloadURL(snapShot.ref);
+    setImage(url);
+    console.log(url);
+  };
 
   useEffect(() => {}, []);
   const createUser = async () => {
@@ -35,51 +52,12 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await createUser();
-      if (response.status === 200) {
-        alert("User created successfully");
-        navigate("/");
-      } else {
-        alert("User creation failed. Please check your input data.");
-      }
+      createUser();
+      alert("Created Successfully");
+      navigate("/");
     } catch (error) {
       alert("User creation failed. Please check your input data.");
     }
-  };
-
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
-
-  const handleUpload = () => {
-    if (!Image) {
-      alert("Please upload an image first!");
-      return;
-    }
-
-    const storageRef = ref(storage, `/files/${Image.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, Image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const percent = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setPercent(percent);
-      },
-      (err) => console.log(err),
-      () => {
-        // The upload is complete; get the download URL
-        getDownloadURL(uploadTask.snapshot.ref)
-          .then((url) => {
-            setImage(url); // Update the state with the download URL
-            console.log(url);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    );
   };
 
   return (
@@ -160,7 +138,23 @@ const Form = () => {
             >
               Country
             </label>
-            <input
+
+            <select
+              name="country"
+              id=""
+              className="appearance-none block w-full bg-gray-200 text-gray-700
+            border border-gray-200 rounded py-3 px-4 leading-tight
+            focus:outline-none focus:bg-white focus:border-gray-500"
+              value={Country}
+              onChange={(e) => {
+                setCountry(e.target.value);
+              }}
+            >
+              <option value="India">India</option>
+              <option value="Nigeria">Nigeria</option>
+              <option value="Ghana">Ghana</option>
+            </select>
+            {/* <input
               required
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-city"
@@ -169,7 +163,7 @@ const Form = () => {
               onChange={(e) => {
                 setCountry(e.target.value);
               }}
-            />
+            /> */}
           </div>
           <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
@@ -200,7 +194,7 @@ const Form = () => {
             </label>
 
             <input
-              required
+              // required
               type="file"
               // accept="/image"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"

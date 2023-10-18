@@ -20,11 +20,15 @@ const USchema = new mongoose.Schema(
     },
     Country: {
       type: String,
+      enum: {
+        values: ["Nigeria", "Ghana", "India"],
+        message: "{VALUE} is not supported",
+      },
       required: [true, "Please the Country fields is required"],
     },
     Image: {
       type: String,
-      required: [true, "Please the Image fields is required"],
+      // required: [true, "Please the Image fields is required"],
     },
     date: {
       type: Date,
