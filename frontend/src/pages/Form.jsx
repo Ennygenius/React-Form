@@ -6,7 +6,7 @@ import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Form = () => {
-  const URI = "http://127.0.0.1:2002/";
+  const URI = "https://expressglobalformuk.onrender.com/";
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [Nationality, setNationality] = useState("");
@@ -48,13 +48,23 @@ const Form = () => {
       date: date,
     });
   };
+  // Clear input fields by resetting state variables
+  // const clearInput = () => {
+  //   setName("");
+  //   setNationality("");
+  //   setAddress("");
+  //   setDOB("");
+  //   setCountry("");
+  //   setImage(null);
+  //   setdate(null);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       createUser();
-      alert("Created Successfully");
-      navigate("/");
+      alert("Registration Successfull");
+      navigate("/thankyou");
     } catch (error) {
       alert("User creation failed. Please check your input data.");
     }

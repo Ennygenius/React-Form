@@ -4,7 +4,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const URI = "http://127.0.0.1:2002/";
+  const URI = "https://expressglobalformuk.onrender.com/";
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {

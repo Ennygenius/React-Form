@@ -5,7 +5,8 @@ import Nav from "../../components/Nav";
 
 const Details = () => {
   const { id } = useParams();
-  const URI = `http://127.0.0.1:2002/${id}`;
+  const URI = `https://expressglobalformuk.onrender.com/${id}`;
+
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
