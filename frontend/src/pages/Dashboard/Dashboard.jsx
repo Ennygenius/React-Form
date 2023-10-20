@@ -4,7 +4,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const URI = "https://expressglobalformuk.onrender.com/";
+  // const URI = "https://expressglobalformuk.onrender.com/";
+  const URI = "http://127.0.0.1:2002/";
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ const Dashboard = () => {
           <p>No data Availabe</p>
         ) : (
           data.map((user, index) => (
-            <Link to={`/details/${user._id}`}>
+            <Link to={`/details/${user._id}`} key={user._id}>
               <div className="my-10  hover:shadow-md cursor-pointer border list-none p-4 flex">
                 <div className="flex justify-between items-center">
                   {" "}

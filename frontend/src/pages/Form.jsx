@@ -3,10 +3,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import { storage } from "../../config/firebaseConfig";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useTranslation } from "react-i18next";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
 
 const Form = () => {
-  const URI = "https://expressglobalformuk.onrender.com/";
+  const URI = "http://127.0.0.1:2002/";
+  // const URI = "https://expressglobalformuk.onrender.com/";
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [Nationality, setNationality] = useState("");
@@ -18,6 +26,7 @@ const Form = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    // const file = e.target.value;
     if (file) {
       setImage(file);
     }
@@ -29,14 +38,13 @@ const Form = () => {
       return;
     }
     const blob = Image;
-    const storageRef = ref(storage, `/files/${Image}`); // Use the file name, not the URL
+    const storageRef = ref(storage, `/files/${Image}`);
     const snapShot = await uploadBytesResumable(storageRef, blob);
     const url = await getDownloadURL(snapShot.ref);
     setImage(url);
     console.log(url);
   };
 
-  useEffect(() => {}, []);
   const createUser = async () => {
     const req = await axios.post(URI, {
       name: name,
@@ -48,23 +56,13 @@ const Form = () => {
       date: date,
     });
   };
-  // Clear input fields by resetting state variables
-  // const clearInput = () => {
-  //   setName("");
-  //   setNationality("");
-  //   setAddress("");
-  //   setDOB("");
-  //   setCountry("");
-  //   setImage(null);
-  //   setdate(null);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       createUser();
       alert("Registration Successfull");
-      navigate("/thankyou");
+      // navigate("/thankyou");
     } catch (error) {
       alert("User creation failed. Please check your input data.");
     }
@@ -79,7 +77,7 @@ const Form = () => {
         encType="multipart/form-data"
       >
         <h2 className="text-center my-5 text-3xl font-bold underline">
-          Application Form
+          {t("Application Form")}
         </h2>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -163,24 +161,20 @@ const Form = () => {
               <option value="India">India</option>
               <option value="Nigeria">Nigeria</option>
               <option value="Ghana">Ghana</option>
+              <option value="Cameroon">Cameroon</option>
+              <option value="Califonia">Califonia</option>
+              <option value="Japan">Japan</option>
+              <option value="China">China</option>
+              <option value="Italy">Italy</option>
+              <option value="Bangledish">Bangledish</option>
             </select>
-            {/* <input
-              required
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-city"
-              type="text"
-              placeholder="Albuquerque"
-              onChange={(e) => {
-                setCountry(e.target.value);
-              }}
-            /> */}
           </div>
           <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="grid-state"
             >
-              DOB
+              Date of birth
             </label>
             <div className="">
               <input
@@ -200,13 +194,13 @@ const Form = () => {
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="fileInput"
             >
-              Image
+              Driver's License / ID Card
             </label>
 
             <input
               // required
               type="file"
-              // accept="/image"
+              accept="/image"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="fileInput"
               src=""

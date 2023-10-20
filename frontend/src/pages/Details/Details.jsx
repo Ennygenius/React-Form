@@ -5,7 +5,8 @@ import Nav from "../../components/Nav";
 
 const Details = () => {
   const { id } = useParams();
-  const URI = `https://expressglobalformuk.onrender.com/${id}`;
+  // const URI = `https://expressglobalformuk.onrender.com/${id}`;
+  const URI = `http://127.0.0.1:2002/${id}`;
 
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -53,6 +54,11 @@ const Details = () => {
           <ul className="my-5">
             <h2 className="text-xl font-bold">Date</h2>
             <li>{data.date}</li>
+          </ul>
+
+          <ul className="my-5">
+            <h2 className="text-xl font-bold">Created at</h2>
+            <li>{data.createdAt}</li>
           </ul>
         </div>
       </div>

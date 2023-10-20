@@ -21,7 +21,16 @@ const USchema = new mongoose.Schema(
     Country: {
       type: String,
       enum: {
-        values: ["Nigeria", "Ghana", "India"],
+        values: [
+          "Nigeria",
+          "Ghana",
+          "India",
+          "Cameroon",
+          "Japan",
+          "China",
+          "Italy",
+          "Bangledish",
+        ],
         message: "{VALUE} is not supported",
       },
       required: [true, "Please the Country fields is required"],
