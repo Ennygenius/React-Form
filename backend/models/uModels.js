@@ -27,6 +27,7 @@ const USchema = new mongoose.Schema(
           "India",
           "Cameroon",
           "Japan",
+          "Califonia",
           "China",
           "Italy",
           "Bangledish",

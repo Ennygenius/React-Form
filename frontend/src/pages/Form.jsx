@@ -2,19 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
-import { storage } from "../../config/firebaseConfig";
 import { useTranslation } from "react-i18next";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  uploadBytes,
-} from "firebase/storage";
 
 const Form = () => {
   const URI = "http://127.0.0.1:2002/";
   // const URI = "https://expressglobalformuk.onrender.com/";
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [Nationality, setNationality] = useState("");
@@ -24,39 +16,22 @@ const Form = () => {
   const [Image, setImage] = useState(null);
   const [date, setdate] = useState(null);
 
+  const createUser = async () => {
+    const formData = new FormData();
+    formData.append("Image", Image);
+    formData.append("name", name);
+    formData.append("Nationality", Nationality);
+    formData.append("Address", Address);
+    formData.append("Country", Country);
+    formData.append("DOB", DOB);
+    formData.append("date", date);
+
+    const req = await axios.post(URI, formData);
+  };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    // const file = e.target.value;
-    if (file) {
-      setImage(file);
-    }
+    setImage(file);
   };
-
-  const handleUpload = async () => {
-    if (!Image) {
-      alert("Please upload an image first!");
-      return;
-    }
-    const blob = Image;
-    const storageRef = ref(storage, `/files/${Image}`);
-    const snapShot = await uploadBytesResumable(storageRef, blob);
-    const url = await getDownloadURL(snapShot.ref);
-    setImage(url);
-    console.log(url);
-  };
-
-  const createUser = async () => {
-    const req = await axios.post(URI, {
-      name: name,
-      Nationality: Nationality,
-      Address: Address,
-      Country: Country,
-      DOB: DOB,
-      Image: Image,
-      date: date,
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -74,10 +49,12 @@ const Form = () => {
       <form
         className=" w-[90%] md:w-[70%] m-auto border shadow-lg p-5"
         onSubmit={handleSubmit}
+        // method="POST"
+        name="Image"
         encType="multipart/form-data"
       >
         <h2 className="text-center my-5 text-3xl font-bold underline">
-          {t("Application Form")}
+          Application Form
         </h2>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -198,13 +175,11 @@ const Form = () => {
             </label>
 
             <input
-              // required
               type="file"
+              name="Image"
               accept="/image"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="fileInput"
-              src=""
-              alt=""
+              id="Image"
               onChange={handleFileChange}
             />
           </div>
@@ -215,7 +190,7 @@ const Form = () => {
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="grid-state"
             >
-              Date
+              Date of registration
             </label>
             <div className="">
               <input
@@ -234,7 +209,6 @@ const Form = () => {
         <div className="">
           <input
             type="Submit"
-            onClick={handleUpload}
             value={"submit"}
             className="bg-gray-700 text-white py-3 px-10 text-md my-2 rounded cursor-pointer"
           />
