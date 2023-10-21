@@ -22,8 +22,14 @@ const USchema = new mongoose.Schema(
       type: String,
       enum: {
         values: [
-          "Nigeria",
-          "Ghana",
+          "Turkey",
+          "Azerbaijan",
+          "Australia",
+          "Canada",
+          "USA",
+          "Korea",
+          "Portuguese",
+          "Brazil",
           "India",
           "Cameroon",
           "Japan",

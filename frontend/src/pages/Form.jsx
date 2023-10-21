@@ -5,8 +5,8 @@ import Nav from "../components/Nav";
 import { useTranslation } from "react-i18next";
 
 const Form = () => {
-  const URI = "http://127.0.0.1:2002/";
-  // const URI = "https://expressglobalformuk.onrender.com/";
+  // const URI = "http://127.0.0.1:2002/";
+  const URI = "https://expressglobalformuk.onrender.com/";
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [Nationality, setNationality] = useState("");
@@ -37,7 +37,7 @@ const Form = () => {
     try {
       createUser();
       alert("Registration Successfull");
-      // navigate("/thankyou");
+      navigate("/thankyou");
     } catch (error) {
       alert("User creation failed. Please check your input data.");
     }
@@ -136,14 +136,19 @@ const Form = () => {
               }}
             >
               <option value="India">India</option>
-              <option value="Nigeria">Nigeria</option>
-              <option value="Ghana">Ghana</option>
               <option value="Cameroon">Cameroon</option>
               <option value="Califonia">Califonia</option>
               <option value="Japan">Japan</option>
               <option value="China">China</option>
               <option value="Italy">Italy</option>
-              <option value="Bangledish">Bangledish</option>
+              <option value="Turkey">Turkey</option>
+              <option value="Azerbaijan">Azerbaijan</option>
+              <option value="Australia">Australia</option>
+              <option value="Canada">Canada</option>
+              <option value="USA">USA</option>
+              <option value="Korea">Korea</option>
+              <option value="Portuguese">Portuguese</option>
+              <option value="Brazil">Brazil</option>
             </select>
           </div>
           <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
